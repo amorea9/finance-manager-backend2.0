@@ -1,17 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
-import { Entry } from "../../entries/entities/entry.entity"
+import { Entry } from 'src/entries/entities/entry.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Category {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    title: string
+  @Column()
+  title: string;
 
-    @Column({ default: '' })
-    description: string
+  @Column({ default: '' })
+  description: string;
 
-    @OneToMany(() => Entry, (entry) => entry.category)
-    entries: Entry[]
+  @OneToMany(() => Entry, (entry) => entry.category)
+  entries: Entry[];
 }

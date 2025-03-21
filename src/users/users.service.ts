@@ -22,17 +22,17 @@ export class UsersService {
     return this.userRepository.findOne({ where: { id: id } });
   }
 
-  async findOne(username: string): Promise<UserEntity> {
+  async findOne(email: string): Promise<UserEntity> {
     const result = await this.userRepository.findOne({
-      where: { username: username },
+      where: { email: email },
     });
     // console.log("findOne user service", result);
 
     return result;
   }
 
-  async create(username: string, password: string) {
-    return this.userRepository.save({ username, password }); // Never save passwords in clear text!
+  async create(email: string, password: string) {
+    return this.userRepository.save({ email, password }); // Never save passwords in clear text!
   }
 
   // An example to retrieve data with related data. Can be used for

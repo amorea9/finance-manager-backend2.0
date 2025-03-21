@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserEntity } from '../src/authentication/entities/user';
 import { UsersService } from '../src/users/users.service';
 import { AuthService } from '../src/authentication/auth.service';
@@ -14,7 +14,7 @@ describe('AuthController (e2e)', () => {
   let usersRepository: Repository<UserEntity>;
   let usersService: UsersService;
   let authService: AuthService;
-  let connection: Connection;
+  // let connection: DataSource;
 
   beforeEach(async () => {
     moduleFixture = await Test.createTestingModule({
@@ -24,16 +24,16 @@ describe('AuthController (e2e)', () => {
     usersService = moduleFixture.get(UsersService);
     authService = moduleFixture.get(AuthService);
     usersRepository = moduleFixture.get(getRepositoryToken(UserEntity));
-    await usersRepository.query('DELETE FROM user_entity');
+    await usersRepository.clear();
 
-    connection = moduleFixture.get(Connection);
+    // connection = moduleFixture.get(DataSource);
     app = moduleFixture.createNestApplication();
     await app.init();
   });
 
   describe('Signup', () => {
     it('should create a user', async () => {
-      const user = { username: 'chr', password: '1234' };
+      const user = { email: 'chr', password: '1234' };
 
       // Act
       const { body } = await request(app.getHttpServer())
@@ -43,7 +43,7 @@ describe('AuthController (e2e)', () => {
 
       //   console.log(body);
 
-      expect(body.username).toEqual('chr');
+      expect(body.email).toEqual('chr');
       expect(body.role).toEqual('user');
       expect(body.id).toBeDefined();
     });
@@ -51,9 +51,9 @@ describe('AuthController (e2e)', () => {
 
   describe('Login', () => {
     it('should login and get a token', async () => {
-      const createdUser = await usersService.create('chr', '1234');
+      await usersService.create('chr', '1234');
 
-      const login = { username: 'chr', password: '1234' };
+      const login = { email: 'chr', password: '1234' };
       // Act
       const { body } = await request(app.getHttpServer())
         .post('/auth/login')
@@ -66,10 +66,10 @@ describe('AuthController (e2e)', () => {
 
   describe('Upgrade users', () => {
     it('should upgrade the role of the user to premium', async () => {
-      const signedUpUser = await usersService.create('kirs', '1234');
+      await usersService.create('kirs', '1234');
 
       const { access_token } = await authService.login({
-        username: 'kirs',
+        email: 'kirs',
         password: '1234',
       });
 
@@ -84,7 +84,7 @@ describe('AuthController (e2e)', () => {
     });
   });
 
-  afterAll(() => {
-    app.close();
+  afterAll(async () => {
+    await app.close();
   });
 });

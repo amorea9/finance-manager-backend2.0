@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { EntriesService } from './entries.service';
 import { CreateEntryDto } from './dto/create-entry.dto';
-import { UpdateEntryDto } from './dto/update-entry.dto';
-import { JwtAuthGuard } from '../authentication/jwt-auth.guard';
-import { PremiumUserGuard } from '../authentication/premium-user.guard';
+// import { UpdateEntryDto } from './dto/update-entry.dto';
+// import { JwtAuthGuard } from '../authentication/jwt-auth.guard';
+// import { PremiumUserGuard } from '../authentication/premium-user.guard';
 
 @Controller('entries')
 export class EntriesController {
@@ -15,23 +15,31 @@ export class EntriesController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, PremiumUserGuard)
+  // @UseGuards(JwtAuthGuard, PremiumUserGuard)
   findAll() {
     return this.entriesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.entriesService.findOne(+id);
+  async findOne(id: string) {
+    return await this.entriesService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEntryDto: UpdateEntryDto) {
-    return this.entriesService.update(+id, updateEntryDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateEntryDto: UpdateEntryDto) {
+  //   return this.entriesService.update(+id, updateEntryDto);
+  // }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.entriesService.remove(+id);
+  async remove(@Param('id') id: number) {
+    try {
+      const entry = await this.entriesService.remove(+id);
+      if (!entry) {
+        return { message: 'Entry not found' }; // Ensure a JSON response
+      }
+      return { message: `Entry with id ${id} successfully removed` };
+    } catch (error) {
+      return { message: `Error deleting entry: ${error}` }; // Handle error as JSON
+    }
   }
 }

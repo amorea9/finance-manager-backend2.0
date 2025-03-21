@@ -1,9 +1,10 @@
-import { Category } from "../../categories/entities/category.entity"
+import { Category } from '../../categories/entities/category.entity';
 
 export class CreateEntryDto {
-    title: string
-
-    amount: number
-
-    category: Category
+  title: string;
+  amount: number;
+  date: string;
+  paymentMethod: string;
+  currency: string;
+  category: Category;
 }

@@ -14,11 +14,11 @@ export class AuthService {
   }
 
   async signup(user: any) {
-    return this.usersService.create(user.username, user.password);
+    return this.usersService.create(user.email, user.password);
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+  async validateUser(email: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOne(email);
     // console.log("user found", user);
 
     if (user && user.password === pass) {
@@ -31,10 +31,10 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const userFromDb = await this.usersService.findOne(user.username);
+    const userFromDb = await this.usersService.findOne(user.email);
 
     const payload = {
-      username: user.username,
+      email: user.email,
       id: userFromDb.id,
     };
 

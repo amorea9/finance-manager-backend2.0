@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Role } from '../users/role';
 import { UsersService } from '../users/users.service';
-import { UserEntity } from './entities/user';
 
 //Used with JWT guard to allow only admin access to endpoint.
 @Injectable()
