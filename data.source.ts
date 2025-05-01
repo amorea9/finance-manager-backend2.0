@@ -11,6 +11,7 @@ export const dbConfig: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   autoLoadEntities: true,
+  //synch true means we don't do manual migrations
   synchronize: false, // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data.
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/src/migrations/*{.ts,.js}'],
